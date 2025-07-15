@@ -1,0 +1,22 @@
+1. Create namespace
+kubectl create namespace argocd
+
+2. Install argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+3. Expose argocd --> 
+for Local access: localhost:8080
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+for Loadbalancer:
+kubectl patch svc argocd-server -n argocd \
+  -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl get svc -n argocd
+
+4. Get Admin Paswword:
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+Username is admin
+
+5. Apply Argocd app
+kubectl apply -f nginx-argocd.yml
+
